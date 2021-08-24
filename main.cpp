@@ -14,18 +14,22 @@ main(int argc, char* argv[])
 
   sf::VertexArray lines(sf::LinesStrip);
 
-  float CELL_SIZE = 50.0f;
+  sf::Vector2u permission = window.getSize();
+  int MAX_W = permission.x;
+  int MAX_H = permission.y;
+
+  float CELL_SIZE = 70.0f;
 
   lines.append(sf::Vertex(sf::Vector2f(0.0f, CELL_SIZE - 1), Color::White));
   lines.append(
     sf::Vertex(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1), Color::White));
   lines.append(sf::Vertex(sf::Vector2f(CELL_SIZE - 1, 0.0f), Color::White));
 
-  float offset_h = ((ceil(1920 / CELL_SIZE) * CELL_SIZE) / 2 - 1920 / 2);
-  float offset_w = ((ceil(1080 / CELL_SIZE) * CELL_SIZE) / 2 - 1080 / 2);
+  float offset_W = (float)((MAX_W / 2) % (int)CELL_SIZE);
+  float offset_H = (float)((MAX_H / 2) % (int)CELL_SIZE);
 
-  std::cout << "offset_h = " << (int)offset_h << std::endl;
-  std::cout << "offset_w = " << (int)offset_w << std::endl;
+  std::cout << "offset_h = " << (int)offset_W << std::endl;
+  std::cout << "offset_w = " << (int)offset_H << std::endl;
 
   sf::RenderTexture texture;
   if (!texture.create((int)CELL_SIZE, (int)CELL_SIZE))
@@ -36,10 +40,14 @@ main(int argc, char* argv[])
   texture.setRepeated(true);
   texture.display();
 
-  sf::Sprite sprite(texture.getTexture(), IntRect(0, 0, 1920, 1080));
+  sf::Sprite sprite(texture.getTexture(),
+                    IntRect(-(int)offset_W,
+                            -(int)offset_H,
+                            MAX_W + (int)offset_W,
+                            MAX_H + (int)offset_H));
 
-  // sprite.setPosition(15.f, 10.f);
-  sprite.move(-offset_h, -offset_w);
+  // sprite.setPosition(4.0f, 6.0f);
+  // sprite.move(offset_W, offset_H);
 
   // Главный цикл приложения. Выполняется, пока открыто окно
   while (window.isOpen()) {
@@ -54,15 +62,17 @@ main(int argc, char* argv[])
     // Зададим фон
     window.clear(Color::Blue);
 
-    Vertex line_horizontal[] = { // Координата первой вершины
-                                 Vertex(Vector2f(0.0f, 540.0f)),
-                                 // Координата второй вершины
-                                 Vertex(Vector2f(1920.0f, 540.f))
+    Vertex line_horizontal[] = {
+      // Координата первой вершины
+      Vertex(Vector2f(0.0f, (float)(MAX_H / 2))),
+      // Координата второй вершины
+      Vertex(Vector2f((float)MAX_W, (float)(MAX_H / 2)))
     };
-    Vertex line_vertical[] = { // Координата первой вершины
-                               Vertex(Vector2f(960.0f, 0.0f)),
-                               // Координата второй вершины
-                               Vertex(Vector2f(960.0f, 1080.f))
+    Vertex line_vertical[] = {
+      // Координата первой вершины
+      Vertex(Vector2f((float)(MAX_W / 2), 0.0f)),
+      // Координата второй вершины
+      Vertex(Vector2f((float)(MAX_W / 2), (float)(MAX_H)))
     };
 
     // Устанавливаем цвет линии - красный
