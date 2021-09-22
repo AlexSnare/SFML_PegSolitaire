@@ -46,8 +46,16 @@ main(int argc, char* argv[])
                             MAX_W + (int)offset_W,
                             MAX_H + (int)offset_H));
 
-  // sprite.setPosition(4.0f, 6.0f);
-  // sprite.move(offset_W, offset_H);
+  // DEBUG Экспериментальный код
+  sf::RenderTexture texture2;
+  if (!texture2.create((int)CELL_SIZE, (int)CELL_SIZE))
+    return -1;
+  texture2.clear(Color::Red);
+  // Обновить текстуру
+  texture2.display();
+  sf::Sprite sprite2(texture2.getTexture(), IntRect(50, 50, 70, 70));
+  sprite2.setPosition((int)(MAX_W / 2 - 1), (int)(MAX_H / 2 - 1));
+  //
 
   // Главный цикл приложения. Выполняется, пока открыто окно
   while (window.isOpen()) {
@@ -80,6 +88,7 @@ main(int argc, char* argv[])
     line_vertical->color = Color::Red;
 
     window.draw(sprite);
+    window.draw(sprite2);
     // Отрисовка линии
     window.draw(line_horizontal, 2, Lines);
     window.draw(line_vertical, 2, Lines);
