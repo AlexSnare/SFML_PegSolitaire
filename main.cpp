@@ -48,7 +48,7 @@ main(int argc, char* argv[])
                             -(int)offset_H,
                             MAX_W /*+ (int)offset_W*/,
                             MAX_H /*+ (int)offset_H*/
-                          ));
+                            ));
 
   // DEBUG Экспериментальный код
   sf::RenderTexture texture2;
@@ -83,7 +83,7 @@ main(int argc, char* argv[])
         // Вниз
         if (event.key.code == Keyboard::Down) {
           std::cout << "Press Down" << std::endl;
-          if (position_y < MAX_H - CELL_SIZE)
+          if (position_y < MAX_H - 2 * CELL_SIZE)
             position_y += CELL_SIZE;
         }
         // Влево
@@ -95,7 +95,7 @@ main(int argc, char* argv[])
         // Вправо
         if (event.key.code == Keyboard::Right) {
           std::cout << "Press Right" << std::endl;
-          if (position_x < MAX_W - CELL_SIZE)
+          if (position_x < MAX_W - 2 * CELL_SIZE)
             position_x += CELL_SIZE;
         }
       }
@@ -128,16 +128,17 @@ main(int argc, char* argv[])
 
     sf::Transform trOrigin = sf::Transform::Identity;
     trOrigin.translate(-MAX_W / 2.f, -MAX_H / 2.f);
-    
+
     sf::Transform trSkew{ 1.f, sinf(angleH), 0.f, sinf(angleV), 1.f,
                           0.f, 0.f,          0.f, 1.f };
-    
+
     sf::Transform trRotate = sf::Transform::Identity;
-    trRotate.rotate(angle); angle += 0.01;
+    trRotate.rotate(angle);
+    angle += 0.01;
 
     sf::Transform trScale = sf::Transform::Identity;
     trScale.scale(0.75f, 0.75f);
-    
+
     sf::Transform trCenter = sf::Transform::Identity;
     trCenter.translate(MAX_W / 2.f, MAX_H / 2.f);
 
