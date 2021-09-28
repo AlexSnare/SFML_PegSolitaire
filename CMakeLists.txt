@@ -19,7 +19,7 @@ set (CMAKE_PREFIX_PATH "C:\\Qt\\Qt5.9.9\\5.9.9\\msvc2017_64\\")
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
 file(GLOB_RECURSE src_cpp main.cpp Holst.cpp)
-file(GLOB_RECURSE src_h Holst.h)
+file(GLOB_RECURSE src_h Holst.h ParticleSystem.h)
 
 set(sources
     ${src_cpp}

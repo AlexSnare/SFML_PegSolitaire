@@ -1,3 +1,5 @@
+#include "ParticleSystem.h"
+
 #include <SFML/Graphics.hpp>
 #include <cmath>
 #include <iostream>
@@ -17,8 +19,14 @@ main(int argc, char* argv[])
   sf::VertexArray lines(sf::LinesStrip);
 
   sf::Vector2u permission = window.getSize();
+
   int MAX_W = permission.x;
   int MAX_H = permission.y;
+
+  // Задать кол-во частит
+  ParticleSystem particles(25000, window.getSize());
+  // create a clock to track the elapsed time
+  sf::Clock clock;
 
   float CELL_SIZE = 70.0f;
 
@@ -43,12 +51,13 @@ main(int argc, char* argv[])
   texture.setSmooth(true);
   texture.display();
 
-  sf::Sprite sprite(texture.getTexture(),
-                    IntRect(-(int)offset_W,
-                            -(int)offset_H,
-                            MAX_W /*+ (int)offset_W*/,
-                            MAX_H /*+ (int)offset_H*/
-                            ));
+  sf::Sprite sprite(
+    texture.getTexture(),
+    IntRect(-(int)offset_W * 0,
+            -(int)offset_H * 0,
+            MAX_W - (MAX_W % (int)(2 * CELL_SIZE)) /*+ (int)offset_W*/,
+            MAX_H - (MAX_H % (int)(2 * CELL_SIZE)) /*+ (int)offset_H*/
+            ));
 
   // DEBUG Экспериментальный код
   sf::RenderTexture texture2;
@@ -101,9 +110,14 @@ main(int argc, char* argv[])
       }
     }
 
+    particles.setEmitter(
+      window.mapPixelToCoords(sf::Vector2i{ MAX_W / 2, MAX_H / 2 }));
+    sf::Time elapsed = clock.restart();
+    particles.update(elapsed);
+
     sprite2.setPosition(position_x, position_y);
     // Зададим фон
-    window.clear(Color::Blue);
+    window.clear(Color::Black);
 
     Vertex line_horizontal[] = {
       // Координата первой вершины
@@ -144,8 +158,15 @@ main(int argc, char* argv[])
 
     tr = trCenter * trScale * trSkew * trOrigin;
 
-    window.draw(sprite, tr);
+    sf::Transform trSprite;
+    trSprite.translate((MAX_W - sprite.getLocalBounds().width) / 2,
+                       (MAX_H - sprite.getLocalBounds().height) / 2);
+    trSprite = tr * trSprite;
+
+    window.draw(particles);
+    window.draw(sprite, trSprite);
     window.draw(sprite2, tr);
+
     // Отрисовка линии
     // window.draw(line_horizontal, 2, Lines);
     // window.draw(line_vertical, 2, Lines);
